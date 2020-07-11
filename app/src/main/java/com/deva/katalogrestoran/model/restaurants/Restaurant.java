@@ -4,10 +4,13 @@ import android.util.Log;
 
 import com.deva.katalogrestoran.model.location.Location;
 import com.deva.katalogrestoran.model.rating.UserRating;
+import com.deva.katalogrestoran.model.reviews.Review;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.osmdroid.util.GeoPoint;
+
+import java.util.List;
 
 public class Restaurant {
     @SerializedName("id")
@@ -50,6 +53,8 @@ public class Restaurant {
     @Expose
     private Location location;
 
+    private List<Review> reviews;
+
     /* CONSTRUCTOR */
     public Restaurant(
             long id,
@@ -72,6 +77,14 @@ public class Restaurant {
         this.isDeliveringNow = isDeliveringNow;
         this.hasOnlineDelivery = hasOnlineDelivery;
         this.location = location;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 
     /* GETTER */

@@ -1,5 +1,6 @@
 package com.deva.katalogrestoran.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -8,11 +9,14 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.deva.katalogrestoran.R;
+import com.deva.katalogrestoran.activity.MainActivity;
 import com.deva.katalogrestoran.model.restaurants.Restaurant;
 import com.deva.katalogrestoran.task.LoadImageUrl;
+import com.deva.katalogrestoran.viewmodel.RestaurantViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +24,7 @@ import java.util.List;
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>{
     private List<Restaurant> mDataset;
 
-    public RestaurantAdapter(List<Restaurant> dataset){
-        this.mDataset = dataset;
-    }
+    private RestaurantViewModel vm;
 
     public static class RestaurantViewHolder extends RecyclerView.ViewHolder {
         //            public TextView restaurantName;
@@ -35,6 +37,15 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
             super(v);
             linearLayout = v;
         }
+    }
+
+    public RestaurantAdapter(Context context){
+        vm = new ViewModelProvider((MainActivity) context).get(RestaurantViewModel.class);
+    }
+
+    public void setDataset(List<Restaurant> dataset){
+        this.mDataset = dataset;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -68,6 +79,6 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
 
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return mDataset == null ? 0 : mDataset.size();
     }
 }

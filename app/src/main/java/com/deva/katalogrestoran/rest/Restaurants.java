@@ -1,7 +1,6 @@
 package com.deva.katalogrestoran.rest;
 
 import com.deva.katalogrestoran.model.restaurants.Restaurant;
-import com.deva.katalogrestoran.model.reviews.RestaurantReviewsResponse;
 import com.deva.katalogrestoran.model.reviews.Review;
 import com.deva.katalogrestoran.model.search.SearchRestaurantResponse;
 
