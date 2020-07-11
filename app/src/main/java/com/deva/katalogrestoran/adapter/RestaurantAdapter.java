@@ -18,7 +18,6 @@ import com.deva.katalogrestoran.model.restaurants.Restaurant;
 import com.deva.katalogrestoran.task.LoadImageUrl;
 import com.deva.katalogrestoran.viewmodel.RestaurantViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder>{
@@ -27,10 +26,6 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
     private RestaurantViewModel vm;
 
     public static class RestaurantViewHolder extends RecyclerView.ViewHolder {
-        //            public TextView restaurantName;
-//            public TextView costForTwo;
-//            public TextView rating;
-//            public ImageView restaurantPhoto;
         public LinearLayout linearLayout;
 
         public RestaurantViewHolder(LinearLayout v) {
@@ -74,7 +69,11 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         ratingStars.setRating(mDataset.get(position).getUserRating().getAggregateRating());
         String isDeliveringStatus = mDataset.get(position).getHasOnlineDelivery() == 0 ? "Online Order Not Available" : "Online Order Available";
         hasOnlineDelivery.setText(isDeliveringStatus);
-        new LoadImageUrl(restaurantPhoto).execute(mDataset.get(position).getThumbUrl());
+        if(mDataset.get(position).getThumbUrl() != ""){
+            new LoadImageUrl(restaurantPhoto).execute(mDataset.get(position).getThumbUrl());
+        }else{
+
+        }
     }
 
     @Override

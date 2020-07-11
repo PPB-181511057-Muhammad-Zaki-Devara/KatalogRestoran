@@ -8,7 +8,15 @@ public class User {
     @Expose
     private String name;
 
+    @SerializedName("profile_image")
+    @Expose
+    private String profileImageUrl;
+
     public String getName() {
         return name;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
     }
 }

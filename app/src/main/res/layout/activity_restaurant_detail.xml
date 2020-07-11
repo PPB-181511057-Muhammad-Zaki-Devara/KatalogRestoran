@@ -1,27 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:scrollbars="vertical">
+
+<LinearLayout
+android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/restaurant_photo"
+                android:layout_width="match_parent"
+                android:layout_height="600px"
+                android:adjustViewBounds="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Detail Restoran"/>
+            android:orientation="vertical"
+            android:padding="8sp">
+
+            <TextView
+                android:id="@+id/restaurant_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8sp"
+                android:text="Nama Restoran"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8sp"
+                android:orientation="horizontal">
+
+                <RatingBar
+                    android:id="@+id/rating_stars"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:isIndicator="true"
+                    android:numStars="5"
+                    android:rating="@string/rating_default"
+                    android:stepSize=".5" />
+
+                <TextView
+                    android:id="@+id/rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2sp"
+                    android:text="@string/rating_default" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8sp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/cost_for_two_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cost_for_two_label"
+                    app:layout_constraintStart_toStartOf="@+id/rating_label"
+                    app:layout_constraintTop_toBottomOf="@+id/rating_label" />
+
+                <TextView
+                    android:id="@+id/cost_for_two"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2sp"
+                    android:layout_marginEnd="2sp"
+                    android:text="@string/cost_for_two_default"
+                    app:layout_constraintEnd_toEndOf="@+id/restaurant_name"
+                    app:layout_constraintHorizontal_bias="0.238"
+                    app:layout_constraintStart_toEndOf="@+id/cost_for_two_label"
+                    app:layout_constraintTop_toTopOf="@+id/cost_for_two_label" />
+
+                <TextView
+                    android:id="@+id/currency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/currency_default"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.105"
+                    app:layout_constraintStart_toEndOf="@+id/cost_for_two"
+                    app:layout_constraintTop_toTopOf="@+id/cost_for_two" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/has_online_delivery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8sp"
+                android:text="@string/has_online_delivery_default"
+                app:layout_constraintStart_toStartOf="@+id/rating_label"
+                app:layout_constraintTop_toBottomOf="@+id/cost_for_two_label" />
+
+        </LinearLayout>
+
     </LinearLayout>
-    <org.osmdroid.views.MapView
+    <com.deva.katalogrestoran.mapview.CustomMapView
         android:id="@+id/mapview"
         android:layout_width="match_parent"
         android:layout_height="400px"
         />
+
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8sp">
+
         <TextView
+            android:id="@+id/reviews_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Comments and Reviews"/>
+            android:layout_marginTop="8sp"
+            android:layout_marginBottom="8sp"
+            android:text="Comments and Reviews"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reviews_recycle_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"/>
     </LinearLayout>
 
 </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

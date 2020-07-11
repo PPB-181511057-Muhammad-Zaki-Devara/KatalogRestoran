@@ -1,6 +1,7 @@
 package com.deva.katalogrestoran.rest;
 
 import com.deva.katalogrestoran.model.restaurants.Restaurant;
+import com.deva.katalogrestoran.model.reviews.RestaurantReviewsResponse;
 import com.deva.katalogrestoran.model.reviews.Review;
 import com.deva.katalogrestoran.model.search.SearchRestaurantResponse;
 
@@ -27,6 +28,6 @@ public interface Restaurants {
 
     //RESTAURANT REVIEWS
     @GET("reviews")
-    Call<List<Review>> restaurantReviews(@Header("user-key") String userKey, @Query("res_id") long resId);
+    Call<RestaurantReviewsResponse> restaurantReviews(@Header("user-key") String userKey, @Query("res_id") long resId);
 
 }

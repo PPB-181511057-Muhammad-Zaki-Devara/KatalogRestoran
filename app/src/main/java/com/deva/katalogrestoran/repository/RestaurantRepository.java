@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer;
 import com.deva.katalogrestoran.Config;
 import com.deva.katalogrestoran.adapter.RestaurantAdapter;
 import com.deva.katalogrestoran.model.restaurants.Restaurant;
+import com.deva.katalogrestoran.model.reviews.RestaurantReviewsResponse;
 import com.deva.katalogrestoran.model.reviews.Review;
 import com.deva.katalogrestoran.model.search.SearchRestaurantResponse;
 import com.deva.katalogrestoran.rest.API;
@@ -49,14 +50,14 @@ public class RestaurantRepository {
     }
 
     void requestReviews(long resId, int index){
-        API.restaurants().restaurantReviews(Config.API_KEY, resId).enqueue(new retrofit2.Callback<List<Review>>() {
+        API.restaurants().restaurantReviews(Config.API_KEY, resId).enqueue(new retrofit2.Callback<RestaurantReviewsResponse>() {
             @Override
-            public void onResponse(Call<List<Review>> call, Response<List<Review>> response) {
-                mAllRestaurant.getValue().get(index).setReviews(response.body());
+            public void onResponse(Call<RestaurantReviewsResponse> call, Response<RestaurantReviewsResponse> response) {
+                mAllRestaurant.getValue().get(index).setReviews(response.body().getReviews());
             }
 
             @Override
-            public void onFailure(Call<List<Review>> call, Throwable t) {
+            public void onFailure(Call<RestaurantReviewsResponse> call, Throwable t) {
                 Log.e(TAG, t.toString());
                 Log.e(TAG, call.request().toString());
                 Log.e(TAG, t.getMessage());

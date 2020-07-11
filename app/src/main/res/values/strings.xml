@@ -6,4 +6,5 @@
     <string name="rating_label">Rating:</string>
     <string name="rating_default">4.5</string>
     <string name="has_online_delivery_default">Online Order Not Available</string>
+    <string name="review_default">Lorem ipsum</string>
 </resources>

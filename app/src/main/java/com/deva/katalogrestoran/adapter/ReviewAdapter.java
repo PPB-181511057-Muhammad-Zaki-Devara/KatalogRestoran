@@ -1,34 +1,34 @@
 package com.deva.katalogrestoran.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.deva.katalogrestoran.R;
-import com.deva.katalogrestoran.model.restaurants.Restaurant;
+import com.deva.katalogrestoran.model.reviews.Review;
+import com.deva.katalogrestoran.task.LoadImageUrl;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ReviewAdapter extends RecyclerView.Adapter<RestaurantAdapter.RestaurantViewHolder> {
-    private ArrayList<Restaurant> mDataset;
+public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
+    private List<Review> mDataset;
 
-    public ReviewAdapter(ArrayList<Restaurant> dataset){
+    public ReviewAdapter(List<Review> dataset){
         this.mDataset = dataset;
     }
 
-
-
-    public static class RestaurantViewHolder extends RecyclerView.ViewHolder {
-        //            public TextView restaurantName;
-//            public TextView costForTwo;
-//            public TextView rating;
-//            public ImageView restaurantPhoto;
+    public static class ReviewViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout linearLayout;
 
-        public RestaurantViewHolder(LinearLayout v) {
+        public ReviewViewHolder(LinearLayout v) {
             super(v);
             linearLayout = v;
         }
@@ -36,15 +36,30 @@ public class ReviewAdapter extends RecyclerView.Adapter<RestaurantAdapter.Restau
 
     @NonNull
     @Override
-    public RestaurantAdapter.RestaurantViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ReviewAdapter.ReviewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.restaurant_item, parent, false);
-        RestaurantAdapter.RestaurantViewHolder vh = new RestaurantAdapter.RestaurantViewHolder(v);
+                .inflate(R.layout.review_item, parent, false);
+        ReviewAdapter.ReviewViewHolder vh = new ReviewAdapter.ReviewViewHolder(v);
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RestaurantAdapter.RestaurantViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ReviewAdapter.ReviewViewHolder holder, int position) {
+        TextView userName = (TextView) holder.linearLayout.findViewById(R.id.user_name);
+        TextView rating = (TextView) holder.linearLayout.findViewById(R.id.rating_user);
+        RatingBar ratingStars = (RatingBar) holder.linearLayout.findViewById(R.id.rating_stars_user);
+        TextView review = (TextView) holder.linearLayout.findViewById(R.id.review);
+        ImageView profileImage = (ImageView) holder.linearLayout.findViewById(R.id.profile_image);
+
+        if(mDataset.get(position).getUser() != null){
+            userName.setText(mDataset.get(position).getUser().getName());
+            new LoadImageUrl(profileImage).execute(mDataset.get(position).getUser().getProfileImageUrl());
+        }
+
+
+        rating.setText(Float.toString(mDataset.get(position).getRating()));
+        ratingStars.setRating(mDataset.get(position).getRating());
+        review.setText(mDataset.get(position).getReviewText());
     }
 
     @Override

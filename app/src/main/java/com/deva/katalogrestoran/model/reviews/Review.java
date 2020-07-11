@@ -23,7 +23,7 @@ public class Review {
 
     @SerializedName("user")
     @Expose
-    private User user;
+    private User user =  null;
 
     public float getRating() {
         return rating;

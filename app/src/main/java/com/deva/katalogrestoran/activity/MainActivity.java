@@ -30,19 +30,12 @@ import com.deva.katalogrestoran.model.restaurants.Restaurant;
 import com.deva.katalogrestoran.model.search.SearchRestaurantResponse;
 import com.deva.katalogrestoran.rest.API;
 import com.deva.katalogrestoran.viewmodel.RestaurantViewModel;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.HEAD;
 
 public class MainActivity extends AppCompatActivity{
     private RecyclerView recyclerView;
@@ -89,6 +82,7 @@ public class MainActivity extends AppCompatActivity{
             }
         }));
         recyclerView.setAdapter(mAdapter);
+
 
         mRestaurantViewModel = ViewModelProviders.of(this).get(RestaurantViewModel.class);
         mRestaurantViewModel.getAllRestaurants().observe(this, new Observer<List<Restaurant>>() {
