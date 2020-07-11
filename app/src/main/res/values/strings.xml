@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Katalog Restoran</string>
+    <string name="cost_for_two_label">Cost for Two:</string>
+    <string name="cost_for_two_default">999.999</string>
+    <string name="currency_default">IDR</string>
+    <string name="rating_label">Rating:</string>
+    <string name="rating_default">4.5</string>
+    <string name="has_online_delivery_default">Online Order Not Available</string>
+</resources>
