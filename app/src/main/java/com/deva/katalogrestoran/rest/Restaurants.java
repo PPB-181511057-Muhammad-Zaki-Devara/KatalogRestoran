@@ -28,6 +28,6 @@ public interface Restaurants {
 
     //RESTAURANT REVIEWS
     @GET("reviews")
-    Call<List<Review>> restaurantReviews(@Header("user-key") String userKey, @Query("res_id") long resId);
+    Call<RestaurantReviewsResponse> restaurantReviews(@Header("user-key") String userKey, @Query("res_id") long resId);
 
 }

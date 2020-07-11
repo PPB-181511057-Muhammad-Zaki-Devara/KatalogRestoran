@@ -50,6 +50,10 @@ public class Restaurant {
     @Expose
     private Location location;
 
+    @SerializedName("featured_image")
+    @Expose
+    private String featuredImageUrl;
+
     /* CONSTRUCTOR */
     public Restaurant(
             long id,
@@ -115,15 +119,11 @@ public class Restaurant {
         return location;
     }
 
-//    public static class AggregateRatingDeserializer implements JsonDeserializer<Float> {
-//        @Override
-//        public Float deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
-//            JsonObject obj = json.getAsJsonObject();
-//            return obj.get("aggregate_rating").getAsFloat();
-//        }
-//    }
-
     public GeoPoint getRestaurantGeoPoint(){
         return new GeoPoint(location.getLatitude(), location.getLongitude());
+    }
+
+    public String getFeaturedImageUrl() {
+        return featuredImageUrl;
     }
 }

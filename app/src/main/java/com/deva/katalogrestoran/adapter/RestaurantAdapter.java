@@ -1,5 +1,7 @@
 package com.deva.katalogrestoran.adapter;
 
+import android.graphics.Bitmap;
+import android.graphics.Picture;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -8,6 +10,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.deva.katalogrestoran.R;
@@ -25,10 +29,6 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
     }
 
     public static class RestaurantViewHolder extends RecyclerView.ViewHolder {
-        //            public TextView restaurantName;
-//            public TextView costForTwo;
-//            public TextView rating;
-//            public ImageView restaurantPhoto;
         public LinearLayout linearLayout;
 
         public RestaurantViewHolder(LinearLayout v) {
@@ -63,7 +63,11 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         ratingStars.setRating(mDataset.get(position).getUserRating().getAggregateRating());
         String isDeliveringStatus = mDataset.get(position).getHasOnlineDelivery() == 0 ? "Online Order Not Available" : "Online Order Available";
         hasOnlineDelivery.setText(isDeliveringStatus);
-        new LoadImageUrl(restaurantPhoto).execute(mDataset.get(position).getThumbUrl());
+        if(mDataset.get(position).getThumbUrl() != ""){
+            new LoadImageUrl(restaurantPhoto).execute(mDataset.get(position).getThumbUrl());
+        }else{
+
+        }
     }
 
     @Override
