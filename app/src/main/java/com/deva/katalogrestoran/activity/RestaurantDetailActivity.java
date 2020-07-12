@@ -3,7 +3,9 @@ package com.deva.katalogrestoran.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -11,11 +13,15 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.deva.katalogrestoran.Config;
 import com.deva.katalogrestoran.R;
+import com.deva.katalogrestoran.adapter.RestaurantAdapter;
 import com.deva.katalogrestoran.adapter.ReviewAdapter;
 import com.deva.katalogrestoran.mapview.CustomMapView;
 import com.deva.katalogrestoran.model.restaurants.Restaurant;
@@ -23,6 +29,8 @@ import com.deva.katalogrestoran.model.reviews.RestaurantReviewsResponse;
 import com.deva.katalogrestoran.model.reviews.Review;
 import com.deva.katalogrestoran.rest.API;
 import com.deva.katalogrestoran.task.LoadImageUrl;
+import com.deva.katalogrestoran.viewmodel.RestaurantDetailsViewModel;
+import com.deva.katalogrestoran.viewmodel.RestaurantViewModel;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -44,8 +52,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     private CustomMapView mMapView;
     private Context context;
     private Restaurant mRestaurant;
-    private List<Review> mReviews;
-
+    private RestaurantDetailsViewModel mRestaurantDetailsViewModel;
 
     private TextView restaurantName;
     private TextView costForTwo;
@@ -55,7 +62,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     private TextView hasOnlineDelivery;
     private ImageView restaurantPhoto;
     private RecyclerView reviewsRecyclerView;
-    private RecyclerView.LayoutManager layoutManager;
+    private ReviewAdapter mReviewAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,7 +70,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_restaurant_detail);
         this.context = getApplicationContext();
 
-        // View Detail Restoran
+        // Cari elemen-elemen UI dari layout
         restaurantName = (TextView) findViewById(R.id.restaurant_name);
         costForTwo = (TextView) findViewById(R.id.cost_for_two);
         currency = (TextView) findViewById(R.id.currency);
@@ -72,12 +79,23 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         hasOnlineDelivery = (TextView) findViewById(R.id.has_online_delivery);
         restaurantPhoto = (ImageView) findViewById(R.id.restaurant_photo);
         reviewsRecyclerView = (RecyclerView) findViewById(R.id.reviews_recycle_view);
-        reviewsRecyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
-        reviewsRecyclerView.setLayoutManager(layoutManager);
 
+        // Get restaurant id from intent
+        Intent iGet = getIntent();
+        long resId = iGet.getLongExtra("resId", 0);
 
-        // Map
+        //Inisiasi ViewModel
+        mRestaurantDetailsViewModel = ViewModelProviders.of(this).get(RestaurantDetailsViewModel.class);
+        mRestaurantDetailsViewModel.getListOfReviews(resId);
+        mRestaurantDetailsViewModel.getListOfReviews(resId).observe(this, new Observer<List<Review>>() {
+            @Override
+            public void onChanged(List<Review> reviews) {
+                mReviewAdapter.setDataset(reviews);
+            }
+        });
+        mRestaurant = mRestaurantDetailsViewModel.getRestaurant(resId).getValue();
+
+        // Konfigurasi MapView
         Configuration.getInstance().setUserAgentValue("com-deva-katalogrestoran");
         mMapView = (CustomMapView) findViewById(R.id.mapview);
         mMapView.setTileSource(TileSourceFactory.MAPNIK);
@@ -85,50 +103,32 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         mMapView.setBuiltInZoomControls(true);
         mMapView.setMultiTouchControls(true);
 
-        // Get restaurant id from intent
-        Intent iGet = getIntent();
-        long resId = iGet.getLongExtra("resId", 0);
+        //setup recycler view
+        setupRecyclerView();
 
+        //Render UI
+        renderRestaurantDetails();
+        addItemOverLay();
+        IMapController mMapViewController = mMapView.getController();
+        mMapViewController.setZoom(18);
+        mMapViewController.setCenter(mRestaurant.getRestaurantGeoPoint());
 
-        API.restaurants().restaurantDetails(Config.API_KEY, resId).enqueue(new retrofit2.Callback<Restaurant>(){
-
-            @Override
-            public void onResponse(Call<Restaurant> call, Response<Restaurant> response) {
-                mRestaurant = response.body();
-                render();
-                IMapController mMapViewController = mMapView.getController();
-                mMapViewController.setZoom(18);
-                mMapViewController.setCenter(mRestaurant.getRestaurantGeoPoint());
-                addItemOverLay();
-            }
-
-            @Override
-            public void onFailure(Call<Restaurant> call, Throwable t) {
-                Log.e("RestaurantDetailActivity", t.toString());
-                t.printStackTrace();
-            }
-        });
-
-        API.restaurants().restaurantReviews(Config.API_KEY, resId).enqueue(new retrofit2.Callback<RestaurantReviewsResponse>(){
-
-            @Override
-            public void onResponse(Call<RestaurantReviewsResponse> call, Response<RestaurantReviewsResponse> response) {
-                if(response.body().getReviewsCount() > 0){
-                    mReviews = response.body().getReviews();
-                    reviewsRecyclerView.setAdapter(new ReviewAdapter(mReviews));
-                }else{
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RestaurantReviewsResponse> call, Throwable t) {
-                Log.e("RestaurantDetailActivity", t.toString());
-                t.printStackTrace();
-            }
-        });
     }
 
-    public void render(){
+    private void setupRecyclerView() {
+        if (mReviewAdapter == null) {
+            mReviewAdapter = new ReviewAdapter(this);
+            reviewsRecyclerView.setHasFixedSize(true);
+            reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            reviewsRecyclerView.setAdapter(mReviewAdapter);
+            reviewsRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            reviewsRecyclerView.setNestedScrollingEnabled(true);
+        } else {
+            mReviewAdapter.notifyDataSetChanged();
+        }
+    }
+    
+    public void renderRestaurantDetails(){
         restaurantName.setText(mRestaurant.getName());
         costForTwo.setText(Integer.toString(mRestaurant.getAverageCostForTwo()));
         currency.setText(mRestaurant.getCurrency());
@@ -141,6 +141,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     }
 
 
+    /* Menambahkan overlay yang berupa icon untuk menunjukkan lokasi restoran */
     public void addItemOverLay(){
         //your items
         ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
@@ -162,6 +163,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         mMapView.getOverlays().add(mOverlay);
     }
 
+    /* menambahkan event overlay untuk menangani event yang masuk */
     public void addMapEventOverlay(){
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = (ItemizedOverlayWithFocus<OverlayItem>) mMapView.getOverlays().get(0);
         final MapEventsReceiver mReceive = new MapEventsReceiver() {

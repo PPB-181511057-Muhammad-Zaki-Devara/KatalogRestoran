@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.lifecycle.ViewModelStoreOwner;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,9 +39,8 @@ import retrofit2.Response;
 import retrofit2.http.HEAD;
 
 public class MainActivity extends AppCompatActivity{
-    private RecyclerView recyclerView;
+    private RecyclerView restaurantRecyclerView;
     private RestaurantAdapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
     private RestaurantViewModel mRestaurantViewModel;
     private final int PERMISSION_REQUEST_CODE = 100;
 
@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Meminta Request untuk permission yang dibutuhkan jika belum diberi
         requestPermissionsIfNeeded(new String[]{
                 Manifest.permission.INTERNET,
                 Manifest.permission.ACCESS_NETWORK_STATE,
@@ -55,42 +57,21 @@ public class MainActivity extends AppCompatActivity{
                 Manifest.permission.ACCESS_FINE_LOCATION
         });
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_restaurant);
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new RestaurantAdapter(this);
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new ClickListener() {
-            @Override
-            public void onClick(View view, final int position) {
+        //Cari recycler view di dalam layout
+        restaurantRecyclerView = (RecyclerView) findViewById(R.id.restaurant_recycler_view);
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(getApplicationContext(), RestaurantDetailActivity.class);
-                        intent.putExtra("resId", mRestaurantViewModel.getAllRestaurants().getValue().get(position).getId());
-                        startActivity(intent);
-                    }
-                }, 400);
-//                Toast.makeText(getApplicationContext(), "Item " + position + " clicked", Toast.LENGTH_SHORT).show();
-
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));
-        recyclerView.setAdapter(mAdapter);
-
-
+        //Inisiasi ViewModel
         mRestaurantViewModel = ViewModelProviders.of(this).get(RestaurantViewModel.class);
-        mRestaurantViewModel.getAllRestaurants().observe(this, new Observer<List<Restaurant>>() {
+        mRestaurantViewModel.searchRestaurants("", 11052, "city", "rating");
+        mRestaurantViewModel.getListOfRestaurants().observe(this, new Observer<List<Restaurant>>() {
             @Override
             public void onChanged(List<Restaurant> restaurants) {
                 mAdapter.setDataset(restaurants);
             }
         });
+
+        // Setup Recycler View
+        setupRecyclerView();
     }
 
 
@@ -122,7 +103,7 @@ public class MainActivity extends AppCompatActivity{
 
         @Override
         public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-            View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
+            View child = rv.findChildViewUnder(e.getX(), e.getY());
             if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
                 clickListener.onClick(child, rv.getChildAdapterPosition(child));
             }
@@ -139,6 +120,41 @@ public class MainActivity extends AppCompatActivity{
 
         }
     }
+
+    private void setupRecyclerView() {
+        if (mAdapter == null) {
+            mAdapter = new RestaurantAdapter(MainActivity.this);
+            restaurantRecyclerView.setHasFixedSize(true);
+            restaurantRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            restaurantRecyclerView.setAdapter(mAdapter);
+            restaurantRecyclerView.setItemAnimator(new DefaultItemAnimator());
+            restaurantRecyclerView.setNestedScrollingEnabled(true);
+            restaurantRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), restaurantRecyclerView, new ClickListener() {
+                @Override
+                public void onClick(View view, final int position) {
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = new Intent(getApplicationContext(), RestaurantDetailActivity.class);
+                            intent.putExtra("resId", mRestaurantViewModel.getListOfRestaurants().getValue().get(position).getId());
+                            startActivity(intent);
+                        }
+                    }, 400);
+//                Toast.makeText(getApplicationContext(), "Item " + position + " clicked", Toast.LENGTH_SHORT).show();
+
+                }
+
+                @Override
+                public void onLongClick(View view, int position) {
+
+                }
+            }));
+        } else {
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+    
     public interface ClickListener {
         public void onClick(View view, int position);
 

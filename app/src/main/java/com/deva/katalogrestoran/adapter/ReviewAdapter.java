@@ -1,5 +1,6 @@
 package com.deva.katalogrestoran.adapter;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -20,9 +21,10 @@ import java.util.List;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
     private List<Review> mDataset;
+    private Context context;
 
-    public ReviewAdapter(List<Review> dataset){
-        this.mDataset = dataset;
+    public ReviewAdapter(Context context){
+        this.context = context;
     }
 
     public static class ReviewViewHolder extends RecyclerView.ViewHolder {
@@ -64,6 +66,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     @Override
     public int getItemCount() {
-        return mDataset.size();
+        return mDataset == null ? 0 : mDataset.size();
+    }
+
+    public void setDataset(List<Review> reviews){
+        mDataset = reviews;
+        notifyDataSetChanged();
     }
 }

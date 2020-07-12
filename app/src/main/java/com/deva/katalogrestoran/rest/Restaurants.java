@@ -18,7 +18,7 @@ public interface Restaurants {
     Call<SearchRestaurantResponse> search(
             @Header("user-key") String userKey,
             @Query("q") String query,
-            @Query("entity_id") int entityId,
+            @Query("entity_id") long entityId,
             @Query("entity_type") String entityType,
             @Query("sort") String sort);
 

@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.deva.katalogrestoran.model.restaurants.Restaurant;
 import com.deva.katalogrestoran.repository.RestaurantRepository;
@@ -14,14 +15,20 @@ import java.util.List;
 public class RestaurantViewModel extends AndroidViewModel {
     private RestaurantRepository mRepository;
 
-    private LiveData<List<Restaurant>> mAllRestaurants;
+    private MutableLiveData<List<Restaurant>> listOfRestaurants;
 
     public RestaurantViewModel (Application application) {
         super(application);
-        mRepository = new RestaurantRepository(application);
-        mAllRestaurants = mRepository.getAllRestaurants();
+        mRepository = RestaurantRepository.getInstance();
     }
 
-    public LiveData<List<Restaurant>> getAllRestaurants() { return mAllRestaurants; }
+    public MutableLiveData<List<Restaurant>> getListOfRestaurants(){
+        return listOfRestaurants;
+    }
+
+    public MutableLiveData<List<Restaurant>> searchRestaurants(String query, long entityId, String entityType, String sort) {
+        listOfRestaurants = mRepository.searchRestaurants(query, entityId, entityType, sort);
+        return listOfRestaurants;
+    }
 
 }
