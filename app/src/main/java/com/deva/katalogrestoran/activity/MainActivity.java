@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity{
         setupRecyclerView();
     }
 
+    //Mencari  Menu yang di cari
     public void search_menu(View view) {
         String searchValue = kolom_search.getText().toString();
         mRestaurantViewModel.searchRestaurants(searchValue, 11052, "city", "rating");
