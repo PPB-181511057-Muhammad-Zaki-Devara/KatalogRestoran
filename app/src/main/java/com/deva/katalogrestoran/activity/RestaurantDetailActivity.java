@@ -3,13 +3,9 @@ package com.deva.katalogrestoran.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,18 +15,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.deva.katalogrestoran.Config;
 import com.deva.katalogrestoran.R;
-import com.deva.katalogrestoran.adapter.RestaurantAdapter;
 import com.deva.katalogrestoran.adapter.ReviewAdapter;
 import com.deva.katalogrestoran.mapview.CustomMapView;
 import com.deva.katalogrestoran.model.restaurants.Restaurant;
-import com.deva.katalogrestoran.model.reviews.RestaurantReviewsResponse;
 import com.deva.katalogrestoran.model.reviews.Review;
-import com.deva.katalogrestoran.rest.API;
 import com.deva.katalogrestoran.task.LoadImageUrl;
 import com.deva.katalogrestoran.viewmodel.RestaurantDetailsViewModel;
-import com.deva.katalogrestoran.viewmodel.RestaurantViewModel;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -45,13 +36,9 @@ import org.osmdroid.views.overlay.OverlayItem;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Response;
-
 public class RestaurantDetailActivity extends AppCompatActivity {
     private CustomMapView mMapView;
     private Context context;
-    private Restaurant mRestaurant;
     private RestaurantDetailsViewModel mRestaurantDetailsViewModel;
 
     private TextView restaurantName;
@@ -93,7 +80,14 @@ public class RestaurantDetailActivity extends AppCompatActivity {
                 mReviewAdapter.setDataset(reviews);
             }
         });
-        mRestaurant = mRestaurantDetailsViewModel.getRestaurant(resId).getValue();
+        mRestaurantDetailsViewModel.getRestaurant(resId).observe(this, new Observer<Restaurant>() {
+            @Override
+            public void onChanged(Restaurant restaurant) {
+                //Render UI
+                renderRestaurantDetails(restaurant);
+                addItemOverLay(restaurant);
+            }
+        });
 
         // Konfigurasi MapView
         Configuration.getInstance().setUserAgentValue("com-deva-katalogrestoran");
@@ -105,14 +99,6 @@ public class RestaurantDetailActivity extends AppCompatActivity {
 
         //setup recycler view
         setupRecyclerView();
-
-        //Render UI
-        renderRestaurantDetails();
-        addItemOverLay();
-        IMapController mMapViewController = mMapView.getController();
-        mMapViewController.setZoom(18);
-        mMapViewController.setCenter(mRestaurant.getRestaurantGeoPoint());
-
     }
 
     private void setupRecyclerView() {
@@ -128,58 +114,48 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         }
     }
     
-    public void renderRestaurantDetails(){
-        restaurantName.setText(mRestaurant.getName());
-        costForTwo.setText(Integer.toString(mRestaurant.getAverageCostForTwo()));
-        currency.setText(mRestaurant.getCurrency());
-        rating.setText(Float.toString(mRestaurant.getUserRating().getAggregateRating()));
-        ratingStars.setRating(mRestaurant.getUserRating().getAggregateRating());
-        String isDeliveringStatus = mRestaurant.getHasOnlineDelivery() == 0 ? "Online Order Not Available" : "Online Order Available";
-        hasOnlineDelivery.setText(isDeliveringStatus);
-        restaurantPhoto.setAdjustViewBounds(true);
-        new LoadImageUrl(restaurantPhoto).execute(mRestaurant.getFeaturedImageUrl());
+    public void renderRestaurantDetails(Restaurant mRestaurant){
+        if(mRestaurant != null){
+            restaurantName.setText(mRestaurant.getName());
+            costForTwo.setText(Integer.toString(mRestaurant.getAverageCostForTwo()));
+            currency.setText(mRestaurant.getCurrency());
+            rating.setText(Float.toString(mRestaurant.getUserRating().getAggregateRating()));
+            ratingStars.setRating(mRestaurant.getUserRating().getAggregateRating());
+            String isDeliveringStatus = mRestaurant.getHasOnlineDelivery() == 0 ? "Online Order Not Available" : "Online Order Available";
+            hasOnlineDelivery.setText(isDeliveringStatus);
+            restaurantPhoto.setAdjustViewBounds(true);
+            new LoadImageUrl(restaurantPhoto).execute(mRestaurant.getFeaturedImageUrl());
+
+            //Set fokus dan zoom level map
+            IMapController mMapViewController = mMapView.getController();
+            mMapViewController.setZoom(18);
+            mMapViewController.setCenter(mRestaurant.getRestaurantGeoPoint());
+        }
     }
 
 
     /* Menambahkan overlay yang berupa icon untuk menunjukkan lokasi restoran */
-    public void addItemOverLay(){
-        //your items
-        ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
-        items.add(new OverlayItem(mRestaurant.getName(), mRestaurant.getLocation().getAddress(), mRestaurant.getRestaurantGeoPoint())); // Lat/Lon decimal degrees
+    public void addItemOverLay(Restaurant mRestaurant){
+        if(mRestaurant != null){
+            // Kumpulan markers yang akan ditambahkan pada itemized overlay
+            ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
+            items.add(new OverlayItem(mRestaurant.getName(), mRestaurant.getLocation().getAddress(), mRestaurant.getRestaurantGeoPoint())); // Lat/Lon decimal degrees
 
-        //the overlay
-        ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(items,
-                new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
-                    @Override
-                    public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
-                        return true;
-                    }
-                    @Override
-                    public boolean onItemLongPress(final int index, final OverlayItem item) {
-                        return false;
-                    }
-                }, context);
-        mOverlay.setFocusItemsOnTap(true);
-        mMapView.getOverlays().add(mOverlay);
-    }
-
-    /* menambahkan event overlay untuk menangani event yang masuk */
-    public void addMapEventOverlay(){
-        ItemizedOverlayWithFocus<OverlayItem> mOverlay = (ItemizedOverlayWithFocus<OverlayItem>) mMapView.getOverlays().get(0);
-        final MapEventsReceiver mReceive = new MapEventsReceiver() {
-            @Override
-            public boolean singleTapConfirmedHelper(GeoPoint p) {
-                if(!mOverlay.getFocusedItem().getPoint().equals(p)){
-                    mOverlay.unSetFocusedItem();
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean longPressHelper(final GeoPoint p) {return false;}
-        };
-        mMapView.getOverlays().add(new MapEventsOverlay(mReceive));
+            // menginstansiasikan overlay
+            ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(items,
+                    new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+                        @Override
+                        public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
+                            return true;
+                        }
+                        @Override
+                        public boolean onItemLongPress(final int index, final OverlayItem item) {
+                            return false;
+                        }
+                    }, context);
+            mOverlay.setFocusItemsOnTap(true);
+            mMapView.getOverlays().add(mOverlay);
+        }
     }
 
     @Override

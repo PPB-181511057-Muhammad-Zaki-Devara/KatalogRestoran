@@ -1,6 +1,5 @@
 package com.deva.katalogrestoran.model.reviews;
 
-import com.deva.katalogrestoran.model.restaurants.Restaurant;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;

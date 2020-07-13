@@ -1,22 +1,13 @@
 package com.deva.katalogrestoran.repository;
 
-import android.app.Application;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.deva.katalogrestoran.Config;
-import com.deva.katalogrestoran.adapter.RestaurantAdapter;
 import com.deva.katalogrestoran.model.restaurants.Restaurant;
-import com.deva.katalogrestoran.model.reviews.RestaurantReviewsResponse;
-import com.deva.katalogrestoran.model.reviews.Review;
 import com.deva.katalogrestoran.model.search.SearchRestaurantResponse;
 import com.deva.katalogrestoran.rest.API;
-import com.deva.katalogrestoran.rest.Restaurants;
 
 import java.util.List;
 
@@ -26,7 +17,7 @@ import retrofit2.Response;
 public class RestaurantRepository {
     private static final String TAG = RestaurantRepository.class.getSimpleName();
     private MutableLiveData<List<Restaurant>> listOfRestaurants;
-    private  MutableLiveData<Restaurant> mRestaurant;
+    private MutableLiveData<Restaurant> mRestaurant;
     private static RestaurantRepository mRepository;
 
 

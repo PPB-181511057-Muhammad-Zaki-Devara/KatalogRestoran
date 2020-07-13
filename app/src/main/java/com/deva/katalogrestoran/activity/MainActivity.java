@@ -4,9 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,27 +16,17 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.deva.katalogrestoran.Config;
 import com.deva.katalogrestoran.R;
 import com.deva.katalogrestoran.adapter.RestaurantAdapter;
 import com.deva.katalogrestoran.model.restaurants.Restaurant;
-import com.deva.katalogrestoran.model.search.SearchRestaurantResponse;
-import com.deva.katalogrestoran.rest.API;
 import com.deva.katalogrestoran.viewmodel.RestaurantViewModel;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.http.HEAD;
 
 public class MainActivity extends AppCompatActivity{
     private RecyclerView restaurantRecyclerView;
@@ -155,8 +143,6 @@ public class MainActivity extends AppCompatActivity{
                             startActivity(intent);
                         }
                     }, 400);
-//                Toast.makeText(getApplicationContext(), "Item " + position + " clicked", Toast.LENGTH_SHORT).show();
-
                 }
 
                 @Override

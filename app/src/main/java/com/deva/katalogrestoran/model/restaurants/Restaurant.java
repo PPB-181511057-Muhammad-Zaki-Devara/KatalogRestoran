@@ -1,7 +1,5 @@
 package com.deva.katalogrestoran.model.restaurants;
 
-import android.util.Log;
-
 import com.deva.katalogrestoran.model.location.Location;
 import com.deva.katalogrestoran.model.rating.UserRating;
 import com.deva.katalogrestoran.model.reviews.Review;
@@ -133,7 +131,11 @@ public class Restaurant {
     }
 
     public GeoPoint getRestaurantGeoPoint(){
-        return new GeoPoint(location.getLatitude(), location.getLongitude());
+        if(location != null){
+            return new GeoPoint(location.getLatitude(), location.getLongitude());
+        }else{
+            return new GeoPoint(0, 0);
+        }
     }
 
     public String getFeaturedImageUrl() {

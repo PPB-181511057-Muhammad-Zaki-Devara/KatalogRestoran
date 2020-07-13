@@ -5,10 +5,8 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.deva.katalogrestoran.Config;
-import com.deva.katalogrestoran.model.restaurants.Restaurant;
 import com.deva.katalogrestoran.model.reviews.RestaurantReviewsResponse;
 import com.deva.katalogrestoran.model.reviews.Review;
-import com.deva.katalogrestoran.model.search.SearchRestaurantResponse;
 import com.deva.katalogrestoran.rest.API;
 
 import java.util.List;

@@ -1,7 +1,6 @@
 package com.deva.katalogrestoran.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,7 +15,6 @@ import com.deva.katalogrestoran.R;
 import com.deva.katalogrestoran.model.reviews.Review;
 import com.deva.katalogrestoran.task.LoadImageUrl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
