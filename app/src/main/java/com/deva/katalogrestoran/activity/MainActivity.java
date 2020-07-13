@@ -22,6 +22,8 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.deva.katalogrestoran.Config;
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity{
     private RestaurantAdapter mAdapter;
     private RestaurantViewModel mRestaurantViewModel;
     private final int PERMISSION_REQUEST_CODE = 100;
+    private EditText kolom_search;
+    private Button tombol_search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,10 @@ public class MainActivity extends AppCompatActivity{
         //Cari recycler view di dalam layout
         restaurantRecyclerView = (RecyclerView) findViewById(R.id.restaurant_recycler_view);
 
+        //Cari Button dan Kolom untuk pencarian
+        tombol_search = (Button) findViewById(R.id.Btn_Search);
+        kolom_search = (EditText) findViewById(R.id.EdtTxt_Search);
+
         //Inisiasi ViewModel
         mRestaurantViewModel = ViewModelProviders.of(this).get(RestaurantViewModel.class);
         mRestaurantViewModel.searchRestaurants("", 11052, "city", "rating");
@@ -72,6 +80,11 @@ public class MainActivity extends AppCompatActivity{
 
         // Setup Recycler View
         setupRecyclerView();
+    }
+
+    public void search_menu(View view) {
+        String searchValue = kolom_search.getText().toString();
+        mRestaurantViewModel.searchRestaurants(searchValue, 11052, "city", "rating");
     }
 
 
