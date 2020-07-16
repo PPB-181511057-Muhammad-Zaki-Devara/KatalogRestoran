@@ -25,6 +25,14 @@ public class Review {
     @Expose
     private User user =  null;
 
+    public Review(float rating, String reviewText, long id, long timestamp, User user) {
+        this.rating = rating;
+        this.reviewText = reviewText;
+        this.id = id;
+        this.timestamp = timestamp;
+        this.user = user;
+    }
+
     public float getRating() {
         return rating;
     }

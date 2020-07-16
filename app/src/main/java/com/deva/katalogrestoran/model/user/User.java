@@ -12,6 +12,11 @@ public class User {
     @Expose
     private String profileImageUrl;
 
+    public User(String name, String profileImageUrl) {
+        this.name = name;
+        this.profileImageUrl = profileImageUrl;
+    }
+
     public String getName() {
         return name;
     }

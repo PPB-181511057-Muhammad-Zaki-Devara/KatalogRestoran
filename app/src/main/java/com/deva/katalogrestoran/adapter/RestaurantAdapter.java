@@ -35,7 +35,9 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
     }
 
     public RestaurantAdapter(Context context){
-        vm = new ViewModelProvider((MainActivity) context).get(RestaurantViewModel.class);
+        if(context != null){
+            vm = new ViewModelProvider((MainActivity) context).get(RestaurantViewModel.class);
+        }
     }
 
     public void setDataset(List<Restaurant> dataset){
