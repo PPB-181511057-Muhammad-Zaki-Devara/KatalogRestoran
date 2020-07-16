@@ -1,5 +1,7 @@
 package com.deva.katalogrestoran;
 
+import com.deva.katalogrestoran.adapter.RestaurantAdapter;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;

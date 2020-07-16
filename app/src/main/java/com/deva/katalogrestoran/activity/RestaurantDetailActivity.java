@@ -58,13 +58,13 @@ public class RestaurantDetailActivity extends AppCompatActivity {
         this.context = getApplicationContext();
 
         // Cari elemen-elemen UI dari layout
-        restaurantName = (TextView) findViewById(R.id.restaurant_name);
-        costForTwo = (TextView) findViewById(R.id.cost_for_two);
-        currency = (TextView) findViewById(R.id.currency);
-        rating = (TextView) findViewById(R.id.rating);
+        restaurantName = (TextView) findViewById(R.id.restaurant_name_details);
+        costForTwo = (TextView) findViewById(R.id.cost_for_two_details);
+        currency = (TextView) findViewById(R.id.currency_details);
+        rating = (TextView) findViewById(R.id.rating_details);
         ratingStars = (RatingBar) findViewById(R.id.rating_stars);
-        hasOnlineDelivery = (TextView) findViewById(R.id.has_online_delivery);
-        restaurantPhoto = (ImageView) findViewById(R.id.restaurant_photo);
+        hasOnlineDelivery = (TextView) findViewById(R.id.has_online_delivery_details);
+        restaurantPhoto = (ImageView) findViewById(R.id.restaurant_photo_details);
         reviewsRecyclerView = (RecyclerView) findViewById(R.id.reviews_recycle_view);
 
         // Get restaurant id from intent

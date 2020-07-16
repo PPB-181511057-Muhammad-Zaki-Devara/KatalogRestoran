@@ -32,6 +32,11 @@ public class Location {
     @Expose
     private int countryId;
 
+    public Location(double latitude, double longitude) {
+        this.latitude=latitude;
+        this.longitude=longitude;
+    }
+
     public String getAddress() {
         return address;
     }

@@ -21,7 +21,7 @@ android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/restaurant_photo"
+                android:id="@+id/restaurant_photo_details"
                 android:layout_width="match_parent"
                 android:layout_height="600px"
                 android:adjustViewBounds="true"
@@ -39,7 +39,7 @@ android:layout_width="match_parent"
             android:padding="8sp">
 
             <TextView
-                android:id="@+id/restaurant_name"
+                android:id="@+id/restaurant_name_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8sp"
@@ -64,7 +64,7 @@ android:layout_width="match_parent"
                     android:stepSize=".5" />
 
                 <TextView
-                    android:id="@+id/rating"
+                    android:id="@+id/rating_details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2sp"
@@ -86,7 +86,7 @@ android:layout_width="match_parent"
                     app:layout_constraintTop_toBottomOf="@+id/rating_label" />
 
                 <TextView
-                    android:id="@+id/cost_for_two"
+                    android:id="@+id/cost_for_two_details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2sp"
@@ -98,7 +98,7 @@ android:layout_width="match_parent"
                     app:layout_constraintTop_toTopOf="@+id/cost_for_two_label" />
 
                 <TextView
-                    android:id="@+id/currency"
+                    android:id="@+id/currency_details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/currency_default"
@@ -110,7 +110,7 @@ android:layout_width="match_parent"
             </LinearLayout>
 
             <TextView
-                android:id="@+id/has_online_delivery"
+                android:id="@+id/has_online_delivery_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8sp"

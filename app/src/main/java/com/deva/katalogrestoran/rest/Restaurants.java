@@ -26,5 +26,4 @@ public interface Restaurants {
     //RESTAURANT REVIEWS
     @GET("reviews")
     Call<RestaurantReviewsResponse> restaurantReviews(@Header("user-key") String userKey, @Query("res_id") long resId);
-
 }

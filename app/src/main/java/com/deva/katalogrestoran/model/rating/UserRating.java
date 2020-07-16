@@ -8,6 +8,10 @@ public class UserRating {
     @Expose
     private float aggregateRating;
 
+    public UserRating(float aggregateRating){
+        this.aggregateRating = aggregateRating;
+    }
+
     public float getAggregateRating() {
         return aggregateRating;
     }
